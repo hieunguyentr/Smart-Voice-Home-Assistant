@@ -18,7 +18,7 @@ SYSTEM_INSTRUCTIONS = (
 
 class PiVoiceRuntime:
     def __init__(self):
-        self.base_dir = Path(os.environ.get("PI_ASSISTANT_HOME", str(Path.home())))
+        self.base_dir = Path("/home/hieunguyentr")
         self.whisper_cli = self.base_dir / "whisper.cpp" / "build" / "bin" / "whisper-cli"
         self.whisper_model = self.base_dir / "whisper.cpp" / "models" / "ggml-tiny.en.bin"
         self.piper_bin = self._find_first([

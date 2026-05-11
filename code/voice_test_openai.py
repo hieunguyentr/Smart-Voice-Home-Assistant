@@ -1,18 +1,13 @@
 import atexit
+import os
 import serial
 import socket
 import subprocess
 import sys
 import time
-import os
-from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
-LUMA_SITE_PACKAGES = os.environ.get("PI_LUMA_SITE_PACKAGES")
-
-if LUMA_SITE_PACKAGES:
-    sys.path.insert(0, LUMA_SITE_PACKAGES)
-sys.path.insert(0, str(BASE_DIR / "home_assistant_ai"))
+sys.path.insert(0, "/home/hieunguyentr/.venvs/luma-oled/lib/python3.13/site-packages")
+sys.path.insert(0, "/home/hieunguyentr/home_assistant_ai")
 
 from DFRobot_DF2301Q import *
 from pi_voice_runtime_openai import PiVoiceRuntimeOpenAI
@@ -29,6 +24,76 @@ except Exception:
 
 HELLO_ROBOT_CMDID = 2
 RESET_CMDID = 82
+
+
+def _unique_items(items):
+    seen = set()
+    unique = []
+    for item in items:
+        item = str(item).strip()
+        if item and item not in seen:
+            seen.add(item)
+            unique.append(item)
+    return unique
+
+
+def _speaker_card_candidates():
+    candidates = []
+    configured_card = os.environ.get("PI_SPEAKER_CARD", "")
+    if configured_card:
+        candidates.append(configured_card)
+
+    playback_device = os.environ.get("PI_SPEAKER_DEVICE", "plughw:CARD=Headphones,DEV=0")
+    if "CARD=" in playback_device:
+        candidates.append(playback_device.split("CARD=", 1)[1].split(",", 1)[0])
+
+    try:
+        result = subprocess.run(
+            ["aplay", "-l"],
+            capture_output=True,
+            text=True,
+            timeout=2,
+            check=False,
+        )
+        for line in result.stdout.splitlines():
+            if not line.startswith("card "):
+                continue
+            card_number = line.split(":", 1)[0].replace("card", "").strip()
+            if any(name in line.lower() for name in ("usb", "speaker", "headphones")):
+                candidates.append(card_number)
+    except Exception:
+        pass
+
+    candidates.extend(["Headphones", "1", "0", "2", "3"])
+    return _unique_items(candidates)
+
+
+def set_speaker_volume():
+    volume = os.environ.get("PI_SPEAKER_VOLUME", "100%")
+    mixer = os.environ.get("PI_SPEAKER_MIXER", "").strip()
+    mixers = [mixer] if mixer else ["PCM", "Master", "Speaker"]
+    last_error = ""
+
+    for card in _speaker_card_candidates():
+        for mixer_name in mixers:
+            try:
+                result = subprocess.run(
+                    ["amixer", "-c", card, "sset", mixer_name, volume, "unmute"],
+                    capture_output=True,
+                    text=True,
+                    timeout=2,
+                    check=False,
+                )
+            except Exception as exc:
+                last_error = str(exc)
+                continue
+            if result.returncode == 0:
+                print(f"[audio] speaker volume set: card={card} mixer={mixer_name} volume={volume}", flush=True)
+                return True
+            last_error = (result.stderr or result.stdout or "").strip()
+
+    print(f"[audio] speaker volume not changed: {last_error[:160]}", flush=True)
+    return False
 
 
 class OLEDStatusDisplay:
@@ -114,6 +179,7 @@ def main():
     voice = DFRobot_DF2301Q_UART()
     runtime = PiVoiceRuntimeOpenAI()
     oled = OLEDStatusDisplay('Rose Carter', 'AI assistant')
+    set_speaker_volume()
     runtime.set_status_callback(lambda status, net=False: oled.set_status(status, check_internet=net))
     runtime.set_transcript_callback(oled.set_transcript)
     runtime.set_agent_callback(oled.set_agent)
@@ -162,7 +228,11 @@ def main():
             oled.set_status('listening.....', check_internet=True)
             runtime.start_session()
         elif cmd_id == HELLO_ROBOT_CMDID and runtime.is_active():
-            print('[sensor] hello robot ignored because session is active', flush=True)
+            print('[sensor] hello robot reset active session', flush=True)
+            runtime.cancel_session()
+            time.sleep(0.2)
+            oled.set_status('listening.....', check_internet=True)
+            runtime.start_session()
         elif cmd_id == RESET_CMDID:
             print('reset', flush=True)
             runtime.cancel_session()

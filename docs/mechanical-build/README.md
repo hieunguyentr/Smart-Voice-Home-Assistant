@@ -6,13 +6,22 @@ This section describes the physical build of the Smart Voice Home Assistant.
 
 The prototype is based on a Raspberry Pi with connected voice input, display output, and GPIO-controlled devices. The early build focused on proving that the software and hardware could communicate correctly before designing a final enclosure.
 
+## Prototype Photo
+
+![Mechanical prototype layout](mechanical-prototype.jpg)
+
+This photo shows the current mechanical prototype layout, including the Raspberry Pi, OLED display, breadboard wiring, microphone, speakers, GPIO wiring, and fan/relay hardware arranged inside the project box.
+
 ## Physical Components
 
 - Raspberry Pi main board
 - microSD card with Raspberry Pi OS
 - USB lavalier microphone
+- Speakers for voice output
 - DFRobot voice recognition sensor
 - OLED display
+- Breadboard wiring
+- Fan / relay hardware
 - GPIO-connected fan/status indicators
 - Jumper wires and prototype wiring
 

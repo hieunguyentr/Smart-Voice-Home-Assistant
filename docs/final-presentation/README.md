@@ -1,12 +1,20 @@
 # Final Presentation / Video
 
-This section is reserved for the final presentation PDF and demo video. It follows the same structure as the Espresso project example: overview, objectives, design, build, code, results, issues, and lessons learned.
+This section contains the final presentation files, the recorded demo video, and the shared Google Slides version. It follows the same structure as the Espresso project example: overview, objectives, design, build, code, results, issues, and lessons learned.
 
-## Presentation PDF
+## Final Presentation
 
-[Smart Voice Home Assistant Final Presentation](Smart_Voice_Home_Assistant_Final_Presentation.pdf)
+- [Google Slides presentation](https://docs.google.com/presentation/d/1Wc22Ro5JNa2FTIhVQHj-3GVMs-0tNgibIlKSDZ5diPE/edit?usp=sharing)
+- [PowerPoint file](Smart_Voice_Home_Assistant_Final_Presentation.pptx)
+- [PDF export](Smart_Voice_Home_Assistant_Final_Presentation.pdf)
 
-The generated PDF includes the corrected final-code flow chart based on `code/voice_test_openai.py` and `code/home_assistant_ai/pi_voice_runtime_openai.py`.
+The final presentation includes the corrected code explanation slides based on `code/voice_test_openai.py` and `code/home_assistant_ai/pi_voice_runtime_openai.py`.
+
+## Demo Video
+
+[Watch the demo video](smart-voice-home-assistant-demo.mp4)
+
+The demo shows the Raspberry Pi voice assistant prototype, including the voice-triggered workflow, OpenAI-powered response pipeline, OLED feedback, and hardware output behavior.
 
 ## Presentation Outline
 
@@ -24,20 +32,6 @@ The generated PDF includes the corrected final-code flow chart based on `code/vo
 12. Issues and Lessons Learned
 13. Bill of Materials
 14. Future Improvements
-
-## Video Demo Status
-
-Final video link: to be added.
-
-Planned demo scenes:
-
-- Power on the Raspberry Pi assistant.
-- Show OLED boot/status display.
-- Say `hello robot`.
-- Ask a voice question.
-- Show spoken response.
-- Trigger reset behavior.
-- Show GPIO indicator or device output.
 
 ## Source Material
 

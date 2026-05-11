@@ -141,18 +141,12 @@ AGENTS = {
     },
 }
 
-AGENT_CHANGE_PROMPT = (
-    "Hello, do you want to change agent? "
-    "Say yes or say no."
-)
 AGENT_SELECTION_PROMPT = (
     "Which AI agent would you like to choose? You can choose Rose Carter, the AI assistant; "
     "David Miller, the comedian; Maya Chen, the AI news reader; or Andrew Lee, the translator. "
     "Say the full name, or say number one, number two, number three, or number four."
 )
-AGENT_CHANGE_PROMPT_WAV = Path(
-    os.environ.get("AGENT_CHANGE_PROMPT_WAV", str(PI_ASSISTANT_HOME / "rose_change_agent_yes_no_prompt_v2.wav"))
-)
+
 
 
 class DeviceController:
@@ -739,50 +733,6 @@ class PiVoiceRuntimeOpenAI:
             return self._handled_local_reply(transcript, AGENT_SELECTION_PROMPT)
 
         return None
-
-    def _run_wake_agent_prompt(self, session_id):
-        if not self._play_cached_prompt(AGENT_CHANGE_PROMPT, AGENT_CHANGE_PROMPT_WAV, session_id):
-            return None
-        response = self._listen_once(session_id, seconds=4)
-        if self._cancelled(session_id) or not response:
-            return None
-
-        normalized = self._normalize_text(response)
-        first_prompt_yes = self._is_affirmative(normalized)
-        first_prompt_no = self._is_negative(normalized)
-        if first_prompt_yes:
-            if not self._speak_text(AGENT_SELECTION_PROMPT, session_id, agent_key="rose"):
-                return None
-            selection = self._listen_once(session_id, seconds=4)
-            if self._cancelled(session_id) or not selection:
-                return None
-            chosen = self._detect_agent_choice(self._normalize_text(selection), allow_fuzzy=True)
-            if chosen:
-                self._switch_agent(chosen)
-                self._speak_text(f"Switched to {AGENTS[chosen]['name']}.", session_id, agent_key=chosen)
-                return None
-            self._awaiting_agent_switch = True
-            self._speak_text(
-                "I did not catch the agent name. Please repeat the agent name, or say number one, number two, number three, or number four.",
-                session_id,
-                agent_key="rose",
-            )
-            return None
-
-        if first_prompt_no:
-            return None
-
-        if re.search(r"\b(number|one|two|three|four|1|2|3|4)\b", normalized):
-            self._speak_text("Please say yes or no.", session_id, agent_key="rose")
-            return None
-
-        chosen = self._detect_agent_name(normalized)
-        if chosen:
-            self._switch_agent(chosen)
-            self._speak_text(f"Switched to {AGENTS[chosen]['name']}.", session_id, agent_key=chosen)
-            return None
-
-        return response
 
     def _parse_duration_seconds(self, normalized):
         match = re.search(r"\bfor (\d+)\s*(second|seconds|sec|secs)\b", normalized)
@@ -1424,9 +1374,6 @@ class PiVoiceRuntimeOpenAI:
             if self._cancelled(session_id):
                 self._log("[session] cancelled before start")
                 return
-            initial_transcript = self._run_wake_agent_prompt(session_id)
-            if self._cancelled(session_id):
-                return
             deadline = time.monotonic() + self.conversation_timeout
             self._log(f"[conversation] active for {self.conversation_timeout}s")
             while not self._cancelled(session_id):
@@ -1435,15 +1382,9 @@ class PiVoiceRuntimeOpenAI:
                     self._log("[conversation] timeout -> idle")
                     break
 
-                transcript_from_prompt = False
-                if initial_transcript is not None:
-                    transcript = initial_transcript
-                    initial_transcript = None
-                    transcript_from_prompt = True
-                else:
-                    listen_seconds = max(1, min(self.record_seconds, int(remaining)))
-                    self._log(f"[conversation] waiting for follow-up ({int(remaining)}s left)")
-                    transcript = self._listen_once(session_id, seconds=listen_seconds)
+                listen_seconds = max(1, min(self.record_seconds, int(remaining)))
+                self._log(f"[conversation] waiting for speech ({int(remaining)}s left)")
+                transcript = self._listen_once(session_id, seconds=listen_seconds)
 
                 if self._cancelled(session_id):
                     break
@@ -1459,18 +1400,25 @@ class PiVoiceRuntimeOpenAI:
                     self._update_status("listening.....", check_internet=True)
                     continue
 
-                if not transcript_from_prompt:
-                    self._log(f"[transcript] {transcript}")
-                    self._update_transcript(transcript)
+                self._log(f"[transcript] {transcript}")
+                self._update_transcript(transcript)
                 deadline = time.monotonic() + self.conversation_timeout
                 if self._cancelled(session_id):
                     self._log("[step] reset won before text step")
                     break
-                self._log("[step] sending transcript to openai")
-                self._update_status("send to AI.....", check_internet=True)
                 reply = None
                 post_action = None
-                if self.current_agent == "rose":
+
+                agent_switch_result = self._handle_agent_switch_command(transcript)
+                if agent_switch_result and agent_switch_result.get("handled"):
+                    reply = agent_switch_result.get("reply")
+                    self._log("[agent] handled change-agent command")
+
+                if not reply:
+                    self._log("[step] sending transcript to openai")
+                    self._update_status("send to AI.....", check_internet=True)
+
+                if not reply and self.current_agent == "rose":
                     local_result = self._handle_state_query(transcript)
                     if local_result and local_result.get("handled"):
                         reply = local_result.get("reply")
@@ -1491,7 +1439,7 @@ class PiVoiceRuntimeOpenAI:
                             reply = self._generate_reply(transcript, session_id)
                             if reply:
                                 self._capture_confirmation_from_reply(reply)
-                else:
+                elif not reply:
                     reply = self._generate_reply(transcript, session_id)
                     if reply:
                         self._clear_pending_confirmation_action()
