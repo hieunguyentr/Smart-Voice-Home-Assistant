@@ -2,6 +2,12 @@
 
 This section is reserved for the final presentation PDF and demo video. It follows the same structure as the Espresso project example: overview, objectives, design, build, code, results, issues, and lessons learned.
 
+## Presentation PDF
+
+[Smart Voice Home Assistant Final Presentation](Smart_Voice_Home_Assistant_Final_Presentation.pdf)
+
+The generated PDF includes the corrected final-code flow chart based on `code/voice_test_openai.py` and `code/home_assistant_ai/pi_voice_runtime_openai.py`.
+
 ## Presentation Outline
 
 1. Title: Smart Voice Home Assistant

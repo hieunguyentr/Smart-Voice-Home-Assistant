@@ -1,0 +1,44 @@
+flowchart TD
+    Boot["Boot voice_test_openai.py"] --> Init["Create DFRobot UART sensor, PiVoiceRuntimeOpenAI, and OLEDStatusDisplay"]
+    Init --> Callbacks["Register runtime callbacks: status, transcript, and agent display"]
+    Callbacks --> SensorSetup["Configure voice sensor: unmute, volume, wake time, enter wake mode"]
+    SensorSetup --> Idle["Idle loop: refresh OLED and read command ID"]
+    Idle --> Cmd{"Voice sensor command ID"}
+    Cmd -->|"2: hello robot and no active session"| Start["runtime.start_session()"]
+    Cmd -->|"2 while active"| Ignore["Ignore duplicate wake command"]
+    Cmd -->|"82: reset"| Reset["runtime.cancel_session(); OLED idle"]
+    Cmd -->|"serial error"| Reconnect["Reopen DFRobot UART sensor"]
+    Cmd -->|"other / no command"| KeepAwake["Every 5s send ENTERWAKEUP"]
+    Ignore --> Idle
+    Reset --> Idle
+    Reconnect --> Idle
+    KeepAwake --> Idle
+
+    Start --> Worker["Worker thread: _run_session()"]
+    Worker --> Clear["Clear history, pending actions, agent switch state, and news state"]
+    Clear --> AgentPrompt["Ask whether user wants to change agent"]
+    AgentPrompt --> AgentChoice{"Change agent?"}
+    AgentChoice -->|"yes"| SelectAgent["Listen for Rose, David, Maya, or Andrew and switch agent"]
+    AgentChoice -->|"no / command captured"| Conversation["Start conversation window"]
+    SelectAgent --> Conversation
+    Conversation --> Listen["Record microphone with arecord"]
+    Listen --> Transcribe["Send audio to OpenAI transcription"]
+    Transcribe --> Validate{"Valid transcript?"}
+    Validate -->|"empty / junk"| Conversation
+    Validate -->|"goodbye / timeout / reset"| Done["Session ends and OLED returns idle"]
+    Validate -->|"valid speech"| Route{"Current agent"}
+    Route -->|"Rose"| DevicePath["Check state query, AI device planner, then local device parser"]
+    Route -->|"David / Maya / Andrew"| AgentReply["Generate agent-specific reply"]
+    DevicePath --> DeviceHandled{"Device command handled?"}
+    DeviceHandled -->|"yes"| Reply["Use device reply and store post-action"]
+    DeviceHandled -->|"no"| OpenAIReply["Generate normal OpenAI assistant reply"]
+    OpenAIReply --> Reply
+    AgentReply --> Reply
+    Reply --> TTS["Generate OpenAI TTS audio"]
+    TTS --> Play["Play speech output"]
+    Play --> Action{"Post action exists?"}
+    Action -->|"yes"| GPIO["Apply GPIO action: fan, red light, green light"]
+    Action -->|"no"| Loop["Reset follow-up timer"]
+    GPIO --> Loop
+    Loop --> Conversation
+    Done --> Idle

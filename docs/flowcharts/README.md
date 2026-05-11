@@ -1,45 +1,32 @@
 # Flow Charts
 
-This section explains the main system flow for the Smart Voice Home Assistant.
+This section explains the final system flow for the Smart Voice Home Assistant based on the current code in `code/voice_test_openai.py` and `code/home_assistant_ai/pi_voice_runtime_openai.py`.
 
-## System Flow
+## Final Code Flow
 
-![System flowchart](system-flowchart.png)
+![Final code flowchart](system-flowchart.png)
 
-The original editable diagram is included as:
+Editable Mermaid source:
 
 ```text
-system-flowchart.drawio
+final-code-flow.mmd
 ```
 
-## Wake Word Flow
+## Flow Summary
 
-```mermaid
-flowchart TD
-    Idle[Idle listening mode] --> Sensor[Read voice sensor command ID]
-    Sensor -->|Command ID 2| ActiveCheck{Session active?}
-    ActiveCheck -->|No| Start[Start AI session]
-    ActiveCheck -->|Yes| Ignore[Ignore duplicate wake command]
-    Sensor -->|Command ID 82| Cancel[Cancel current session]
-    Start --> Listen[Listen to user speech]
-    Listen --> Respond[Generate and speak response]
-    Respond --> Idle
-    Cancel --> Idle
-```
+- `voice_test_openai.py` runs continuously on the Raspberry Pi.
+- The DFRobot voice recognition sensor reports command IDs.
+- Command ID `2` starts a new AI session when no session is active.
+- Command ID `82` cancels the active session and returns the OLED to idle.
+- `PiVoiceRuntimeOpenAI` runs the conversation in a worker thread so the main loop can keep reading the sensor.
+- At session start, the runtime asks whether the user wants to change agent.
+- During the conversation window, the runtime records audio, transcribes with OpenAI, routes the transcript, generates a reply, speaks with TTS, and optionally applies GPIO device actions.
+- The session ends on reset, timeout, goodbye phrase, missing reply, or cancellation.
 
-## GPT Response Flow
+## Device Outputs
 
-```mermaid
-flowchart LR
-    Speech[User speech] --> Runtime[PiVoiceRuntimeOpenAI]
-    Runtime --> Status[OLED and GPIO status callbacks]
-    Runtime --> AI[OpenAI response]
-    AI --> TTS[Text-to-speech]
-    TTS --> Speaker[Speaker output]
-```
-
-## Notes
-
-- The dedicated sensor handles wake and reset commands.
-- The Python runtime handles the active conversation session.
-- OLED and GPIO output give the user live feedback about the assistant state.
+| Device | GPIO | Supported actions |
+| --- | --- | --- |
+| Fan | GPIO16 | on, off, blink, delay, duration |
+| Red light | GPIO20 | on, off, blink, delay, duration |
+| Green light | GPIO21 | on, off, blink, delay, duration |

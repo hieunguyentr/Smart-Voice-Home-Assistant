@@ -75,7 +75,7 @@ This repository is organized like a project report website, following the major 
 
 | Section | Status | Description |
 | --- | --- | --- |
-| [Final Presentation / Video](docs/final-presentation/) | ![planned](https://img.shields.io/badge/planned-f59e0b) | Final presentation outline and demo video placeholder. |
+| [Final Presentation / Video](docs/final-presentation/) | ![included](https://img.shields.io/badge/included-22c55e) | Generated final presentation PDF and demo video placeholder. |
 | [Flow Charts](docs/flowcharts/) | ![included](https://img.shields.io/badge/included-22c55e) | System flowchart and voice interaction flow. |
 | [BOM](docs/bom/) | ![draft](https://img.shields.io/badge/draft-38bdf8) | Bill of materials and component purposes. |
 | [Mechanical Build](docs/mechanical-build/) | ![documented](https://img.shields.io/badge/documented-8b5cf6) | Physical build and enclosure notes. |
