@@ -4,7 +4,7 @@ This section contains the final presentation files, the recorded demo video, and
 
 ## Final Presentation
 
-- [Google Slides presentation](https://docs.google.com/presentation/d/1Wc22Ro5JNa2FTIhVQHj-3GVMs-0tNgibIlKSDZ5diPE/edit?usp=sharing)
+[Google Slides presentation](https://docs.google.com/presentation/d/1Wc22Ro5JNa2FTIhVQHj-3GVMs-0tNgibIlKSDZ5diPE/edit?usp=sharing)
 
 ## Demo Video
 
