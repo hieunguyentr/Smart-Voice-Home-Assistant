@@ -6,59 +6,42 @@ This section explains the final system flow for the Smart Voice Home Assistant b
 
 ```mermaid
 flowchart TD
-    A["Boot script<br/>Create voice sensor, runtime, and OLED"] --> B["Idle loop<br/>Refresh OLED and read command ID"]
-    B --> C{"Voice sensor command?"}
+    A["Idle<br/>Assistant is waiting"] --> B["User says<br/>'hello robot'"]
+    B --> C["Start voice session"]
+    C --> D["Record user speech"]
+    D --> E["OpenAI turns speech into text"]
+    E --> F{"What did the user ask?"}
 
-    C -->|"Hello robot<br/>ID 2"| D{"AI session active?"}
-    D -->|"No"| E["Start AI session<br/>Worker thread begins"]
-    D -->|"Yes"| B
+    F -->|"Question or conversation"| G["Generate AI reply"]
+    F -->|"Fan / light command"| H["Plan GPIO action"]
+    F -->|"Change agent"| I["Switch assistant personality"]
 
-    C -->|"Reset<br/>ID 82"| R["Cancel session<br/>Stop audio/OpenAI work<br/>OLED returns idle"]
-    R --> B
+    G --> J["Create speech audio"]
+    H --> J
+    I --> J
 
-    C -->|"Serial error"| U["Reconnect UART sensor"]
-    U --> B
-
-    C -->|"No command"| K["Keep sensor awake<br/>Send wake command every 5 seconds"]
-    K --> B
-
-    E --> F["Ask about agent switch<br/>Rose, David, Maya, or Andrew"]
-    F --> G["Record microphone audio"]
-    G --> H["OpenAI transcription"]
-    H --> I{"Transcript result?"}
-
-    I -->|"Empty or junk"| G
-    I -->|"Goodbye, timeout, or reset"| B
-    I -->|"Valid speech"| J{"Request type?"}
-
-    J -->|"Normal question"| L["Generate AI reply"]
-    J -->|"Device command"| M["Plan device action<br/>Fan, red light, green light"]
-    J -->|"Agent mode"| N["Generate selected agent reply"]
-
-    L --> O["Generate TTS audio"]
-    M --> O
-    N --> O
-
-    O --> P["Speak response"]
-    P --> Q{"Device action planned?"}
-    Q -->|"Yes"| S["Apply GPIO action<br/>on, off, blink, delay, duration"]
-    Q -->|"No"| T["Wait for follow-up"]
-    S --> T
-    T --> G
+    J --> K["Speak response"]
+    K --> L{"Device action needed?"}
+    L -->|"Yes"| M["Control fan or lights"]
+    L -->|"No"| N["Keep listening"]
+    M --> N
+    N --> O{"More speech before timeout?"}
+    O -->|"Yes"| D
+    O -->|"No / reset / goodbye"| A
 ```
 
 Source file: [`final-code-flow.mmd`](final-code-flow.mmd)
 
 ## Flow Summary
 
-- `voice_test_openai.py` runs continuously on the Raspberry Pi.
-- The DFRobot voice recognition sensor reports command IDs.
-- Command ID `2` starts a new AI session when no session is active.
-- Command ID `82` cancels the active session and returns the OLED to idle.
-- `PiVoiceRuntimeOpenAI` runs the conversation in a worker thread so the main loop can keep reading the sensor.
-- At session start, the runtime asks whether the user wants to change agent.
-- During the conversation window, the runtime records audio, transcribes with OpenAI, routes the transcript, generates a reply, speaks with TTS, and optionally applies GPIO device actions.
-- The session ends on reset, timeout, goodbye phrase, missing reply, or cancellation.
+- The assistant waits in idle mode.
+- The user says `hello robot`.
+- The Raspberry Pi records the user's speech.
+- OpenAI turns the speech into text.
+- The code decides whether the user asked a normal question, a device command, or an agent change.
+- The assistant speaks a response.
+- If needed, the Raspberry Pi controls the fan, red light, or green light.
+- The assistant keeps listening until the user stops, says goodbye, resets, or the session times out.
 
 ## Device Outputs
 
