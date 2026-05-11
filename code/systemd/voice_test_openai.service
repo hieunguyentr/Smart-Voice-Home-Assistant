@@ -1,0 +1,20 @@
+[Unit]
+Description=Smart Voice Home Assistant
+Wants=network-online.target
+After=network-online.target sound.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/Smart-Voice-Home-Assistant/code
+Environment=PYTHONUNBUFFERED=1
+Environment=PI_ASSISTANT_HOME=/home/pi
+EnvironmentFile=-/home/pi/.config/smart-voice-home-assistant/openai.env
+ExecStart=/usr/bin/python3 -u /home/pi/Smart-Voice-Home-Assistant/code/voice_test_openai.py
+Restart=always
+RestartSec=3
+StandardOutput=append:/home/pi/smart_voice_home_assistant.log
+StandardError=append:/home/pi/smart_voice_home_assistant.log
+
+[Install]
+WantedBy=multi-user.target

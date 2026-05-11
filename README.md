@@ -81,7 +81,7 @@ This repository is organized like a project report website, following the major 
 | [Mechanical Build](docs/mechanical-build/) | ![documented](https://img.shields.io/badge/documented-8b5cf6) | Physical build and enclosure notes. |
 | [Electrical](docs/electrical/) | ![documented](https://img.shields.io/badge/documented-8b5cf6) | GPIO, serial sensor, and OLED wiring notes. |
 | [Simulation / Results](docs/simulation-results/) | ![tested](https://img.shields.io/badge/tested-22c55e) | Testing results, working features, and issues found. |
-| [Code](src/) | ![included](https://img.shields.io/badge/included-22c55e) | Main Python script and run instructions. |
+| [Code](code/) | ![included](https://img.shields.io/badge/included-22c55e) | Main Python script, runtime modules, requirements, and service template. |
 | [Progress Reports](docs/progress-reports/) | ![included](https://img.shields.io/badge/included-22c55e) | Weekly progress summary and original status report PDF. |
 | [CAD](docs/cad/) | ![to add](https://img.shields.io/badge/to%20add-ef4444) | CAD and enclosure planning notes. |
 
@@ -111,7 +111,7 @@ The current prototype can detect the wake command, enter an active assistant ses
 The current main script is:
 
 ```text
-src/voice_test_openai.py
+code/voice_test_openai.py
 ```
 
 It configures the voice sensor, starts the OpenAI runtime, updates OLED status callbacks, handles wake/reset command IDs, and keeps the device listening in a loop.

@@ -4,9 +4,15 @@ import socket
 import subprocess
 import sys
 import time
+import os
+from pathlib import Path
 
-sys.path.insert(0, "/home/hieunguyentr/.venvs/luma-oled/lib/python3.13/site-packages")
-sys.path.insert(0, "/home/hieunguyentr/home_assistant_ai")
+BASE_DIR = Path(__file__).resolve().parent
+LUMA_SITE_PACKAGES = os.environ.get("PI_LUMA_SITE_PACKAGES")
+
+if LUMA_SITE_PACKAGES:
+    sys.path.insert(0, LUMA_SITE_PACKAGES)
+sys.path.insert(0, str(BASE_DIR / "home_assistant_ai"))
 
 from DFRobot_DF2301Q import *
 from pi_voice_runtime_openai import PiVoiceRuntimeOpenAI
