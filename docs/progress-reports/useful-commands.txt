@@ -1,0 +1,118 @@
+// config
+sudo raspi-config 
+
+
+////////// run test
+cd /home/hieunguyentr
+python3 test_voice.py
+
+/////////// run vosk_test test
+cd /home/hieunguyentr
+source voice/bin/activate
+python vosk_test.py
+
+
+/////////////// gpt API
+import pypandoc
+
+text = """
+GPT PROJECT FILE LOCATIONS (RASPBERRY PI)
+
+Main project folder
+/home/hieunguyentr/gpt_project/
+
+Enter project folder
+cd ~/gpt_project
+
+--------------------------------------------
+
+Main Python script (chat program)
+File:
+/home/hieunguyentr/gpt_project/test_gpt.py
+
+Edit it:
+nano ~/gpt_project/test_gpt.py
+
+Run it:
+python ~/gpt_project/test_gpt.py
+
+or inside folder:
+python test_gpt.py
+
+--------------------------------------------
+
+Python virtual environment
+Folder:
+/home/hieunguyentr/gpt_project/venv/
+
+Activate environment:
+source ~/gpt_project/venv/bin/activate
+
+--------------------------------------------
+
+OpenAI Python package location
+/home/hieunguyentr/gpt_project/venv/lib/python3.13/site-packages/openai/
+
+Normally you do NOT edit this.
+
+--------------------------------------------
+
+API Key location
+/home/hieunguyentr/.bashrc
+
+Edit:
+nano ~/.bashrc
+
+Line added:
+export OPENAI_API_KEY="<your-openai-api-key>"
+
+Reload environment variables:
+source ~/.bashrc
+
+--------------------------------------------
+
+Typical workflow
+
+cd ~/gpt_project
+source venv/bin/activate
+python test_gpt.py
+
+--------------------------------------------
+
+Project structure
+
+/home/hieunguyentr/
+
+.bashrc
+
+gpt_project/
+    test_gpt.py
+    venv/
+        bin/
+        lib/
+        site-packages/
+
+--------------------------------------------
+
+Useful commands
+
+List files:
+ls ~/gpt_project
+
+Tree view:
+sudo apt install tree
+tree ~/gpt_project
+"""
+
+output_file = "/mnt/data/gpt_project_notes.txt"
+pypandoc.convert_text(text, 'plain', format='md', outputfile=output_file, extra_args=['--standalone'])
+
+output_file
+
+
+ssh <pi-user>@<raspberry-pi-ip>
+
+
+source ~/.profile
+cd /home/hieunguyentr
+python3 -u voice_test_openai.py

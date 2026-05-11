@@ -216,3 +216,22 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Project local secrets and runtime files
+*.key
+*.pem
+*.ppk
+*.env.*
+voice_test_openai.log
+install_local_ai_stack.log
+
+# Large Raspberry Pi / disk images
+*.img
+*.iso
+*.zip
+*.tar
+*.tar.gz
+
+# Local remote-access shortcuts and machine-specific files
+*.lnk
+*.rdp
