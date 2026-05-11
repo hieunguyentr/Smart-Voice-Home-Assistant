@@ -4,13 +4,50 @@ This section explains the final system flow for the Smart Voice Home Assistant b
 
 ## Final Code Flow
 
-![Final code flowchart](system-flowchart.png)
+```mermaid
+flowchart TD
+    A["Boot script<br/>Create voice sensor, runtime, and OLED"] --> B["Idle loop<br/>Refresh OLED and read command ID"]
+    B --> C{"Voice sensor command?"}
 
-Editable Mermaid source:
+    C -->|"Hello robot<br/>ID 2"| D{"AI session active?"}
+    D -->|"No"| E["Start AI session<br/>Worker thread begins"]
+    D -->|"Yes"| B
 
-```text
-final-code-flow.mmd
+    C -->|"Reset<br/>ID 82"| R["Cancel session<br/>Stop audio/OpenAI work<br/>OLED returns idle"]
+    R --> B
+
+    C -->|"Serial error"| U["Reconnect UART sensor"]
+    U --> B
+
+    C -->|"No command"| K["Keep sensor awake<br/>Send wake command every 5 seconds"]
+    K --> B
+
+    E --> F["Ask about agent switch<br/>Rose, David, Maya, or Andrew"]
+    F --> G["Record microphone audio"]
+    G --> H["OpenAI transcription"]
+    H --> I{"Transcript result?"}
+
+    I -->|"Empty or junk"| G
+    I -->|"Goodbye, timeout, or reset"| B
+    I -->|"Valid speech"| J{"Request type?"}
+
+    J -->|"Normal question"| L["Generate AI reply"]
+    J -->|"Device command"| M["Plan device action<br/>Fan, red light, green light"]
+    J -->|"Agent mode"| N["Generate selected agent reply"]
+
+    L --> O["Generate TTS audio"]
+    M --> O
+    N --> O
+
+    O --> P["Speak response"]
+    P --> Q{"Device action planned?"}
+    Q -->|"Yes"| S["Apply GPIO action<br/>on, off, blink, delay, duration"]
+    Q -->|"No"| T["Wait for follow-up"]
+    S --> T
+    T --> G
 ```
+
+Source file: [`final-code-flow.mmd`](final-code-flow.mmd)
 
 ## Flow Summary
 
