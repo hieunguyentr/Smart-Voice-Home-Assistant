@@ -1,6 +1,7 @@
 # CAD
 
 This section is reserved for final CAD files and enclosure drawings.
+<img width="538" height="238" alt="Screenshot 2026-05-11 122237" src="https://github.com/user-attachments/assets/debfd889-381c-4509-9833-d558a7591eff" />
 
 ## Current Status
 
@@ -16,6 +17,7 @@ CAD files are to be added. The current project has focused on functional prototy
 - Keep GPIO and relay wiring protected.
 
 ## Future Files
+
 
 Planned file types:
 
