@@ -1,0 +1,48 @@
+<svg width="1200" height="360" viewBox="0 0 1200 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Smart Voice Home Assistant project banner</title>
+  <desc id="desc">Colorful banner for a Raspberry Pi AI voice assistant project.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="0.45" stop-color="#0F766E"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="chip" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#A7F3D0"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="360" rx="34" fill="url(#bg)"/>
+  <circle cx="1030" cy="82" r="140" fill="#FDE047" opacity="0.16"/>
+  <circle cx="930" cy="310" r="170" fill="#38BDF8" opacity="0.14"/>
+  <circle cx="170" cy="290" r="180" fill="#34D399" opacity="0.14"/>
+  <g filter="url(#softShadow)">
+    <rect x="72" y="70" width="210" height="210" rx="30" fill="#0B1220" opacity="0.82"/>
+    <rect x="120" y="112" width="114" height="126" rx="18" fill="url(#chip)"/>
+    <rect x="142" y="134" width="70" height="18" rx="7" fill="#0F172A"/>
+    <rect x="142" y="166" width="70" height="18" rx="7" fill="#0F172A"/>
+    <rect x="142" y="198" width="70" height="18" rx="7" fill="#0F172A"/>
+    <circle cx="246" cy="108" r="12" fill="#F87171"/>
+    <circle cx="246" cy="146" r="12" fill="#22C55E"/>
+    <circle cx="246" cy="184" r="12" fill="#38BDF8"/>
+    <path d="M86 175H34" stroke="#A7F3D0" stroke-width="8" stroke-linecap="round"/>
+    <path d="M320 132H376" stroke="#FDE047" stroke-width="8" stroke-linecap="round"/>
+    <path d="M320 218H402" stroke="#38BDF8" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <text x="350" y="118" font-family="Segoe UI, Arial, sans-serif" font-size="56" font-weight="800" fill="#FFFFFF">Smart Voice</text>
+  <text x="350" y="184" font-family="Segoe UI, Arial, sans-serif" font-size="56" font-weight="800" fill="#FFFFFF">Home Assistant</text>
+  <text x="354" y="228" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="500" fill="#D1FAE5">Raspberry Pi + OpenAI + OLED + GPIO Control</text>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700">
+    <rect x="354" y="260" width="138" height="42" rx="21" fill="#22C55E"/>
+    <text x="386" y="287" fill="#052E16">VOICE</text>
+    <rect x="510" y="260" width="112" height="42" rx="21" fill="#38BDF8"/>
+    <text x="543" y="287" fill="#082F49">AI</text>
+    <rect x="640" y="260" width="130" height="42" rx="21" fill="#FDE047"/>
+    <text x="671" y="287" fill="#422006">OLED</text>
+    <rect x="788" y="260" width="128" height="42" rx="21" fill="#F472B6"/>
+    <text x="821" y="287" fill="#500724">GPIO</text>
+  </g>
+</svg>
