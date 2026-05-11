@@ -1,4 +1,23 @@
-openai>=2.33.0
+# Python packages for the Smart Voice Home Assistant.
+#
+# Fresh Raspberry Pi OS setup still needs system packages first:
+#   sudo apt update
+#   sudo apt install -y python3-pip python3-venv python3-dev build-essential \
+#     python3-rpi.gpio python3-smbus i2c-tools alsa-utils ffmpeg
+#
+# Then install this file:
+#   python3 -m pip install -r requirements.txt
+#
+# External command-line tools used by the project are not Python packages:
+# - arecord/aplay come from alsa-utils
+# - ffmpeg is installed from apt
+# - PicoClaw is installed separately and called through subprocess
+
+openai>=2.0.0
 pyserial>=3.5
 luma.oled>=3.14.0
+luma.core>=2.4.2
+Pillow>=10.0.0
+smbus2>=0.4.3
+spidev>=3.6
 RPi.GPIO>=0.7.1

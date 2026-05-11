@@ -14,19 +14,34 @@ This folder contains the Raspberry Pi application code copied from the working d
 | `requirements.txt` | Python package requirements for the public project code. |
 | `systemd/voice_test_openai.service` | Example service template for running the assistant at boot. |
 
-## Python Requirements
+## Fresh Raspberry Pi OS Setup
 
-Install Python dependencies:
+On a freshly formatted Raspberry Pi OS card, install the system packages first:
+
+```bash
+sudo apt update
+sudo apt install -y python3-pip python3-venv python3-dev build-essential \
+  python3-rpi.gpio python3-smbus i2c-tools alsa-utils ffmpeg
+```
+
+These provide GPIO access, I2C/OLED support, microphone/speaker command-line tools, and audio processing tools.
+
+Then install the Python dependencies from this folder:
 
 ```bash
 python3 -m pip install -r requirements.txt
 ```
 
-Raspberry Pi system packages may also be needed:
+If Raspberry Pi OS blocks system-wide pip installs, use a virtual environment:
 
 ```bash
-sudo apt install -y python3-smbus python3-rpi.gpio alsa-utils ffmpeg
+python3 -m venv ~/.venvs/smart-voice-home-assistant
+source ~/.venvs/smart-voice-home-assistant/bin/activate
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
 ```
+
+PicoClaw is not installed through `requirements.txt`. The runtime calls the PicoClaw executable with `subprocess`, so PicoClaw must exist at `PICOCLAW_BIN` or the default `~/.local/opt/picoclaw/picoclaw` path.
 
 ## Environment Variables
 
