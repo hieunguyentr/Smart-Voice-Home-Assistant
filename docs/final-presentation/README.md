@@ -9,7 +9,7 @@ The final presentation includes the corrected code explanation slides based on `
 
 ## Demo Video
 
-[Watch the demo video](smart-voice-home-assistant-demo.mp4)
+[Watch the demo video](https://mega.nz/file/PXRzjShS#TZDxIc6S5RVoNMHm6rRQUSFKbGCobNBtDWoQN_1UAhQ)
 
 The demo shows the Raspberry Pi voice assistant prototype, including the voice-triggered workflow, OpenAI-powered response pipeline, OLED feedback, and hardware output behavior.
 
