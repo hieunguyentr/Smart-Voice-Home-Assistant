@@ -5,9 +5,6 @@ This section contains the final presentation files, the recorded demo video, and
 ## Final Presentation
 
 - [Google Slides presentation](https://docs.google.com/presentation/d/1Wc22Ro5JNa2FTIhVQHj-3GVMs-0tNgibIlKSDZ5diPE/edit?usp=sharing)
-- [PowerPoint file](Smart_Voice_Home_Assistant_Final_Presentation.pptx)
-- [PDF export](Smart_Voice_Home_Assistant_Final_Presentation.pdf)
-
 The final presentation includes the corrected code explanation slides based on `code/voice_test_openai.py` and `code/home_assistant_ai/pi_voice_runtime_openai.py`.
 
 ## Demo Video
